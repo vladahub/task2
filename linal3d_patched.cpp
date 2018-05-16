@@ -1,4 +1,6 @@
 #include <iostream>
+#include <iomanip>
+#include <math.h>
 
 using namespace std;
 
@@ -98,7 +100,7 @@ public:
 		return this->mat[i][j];
 	}
 
-	void setEl(int i, int j, int x) {
+	void setEl(int i, int j, Any x) {
 		this->mat[i][j] = x;
 	}
 
@@ -115,9 +117,9 @@ public:
 template<typename Any>
 std::ostream& operator<<(std::ostream& osm, const Matrix3D<Any>& m)
 {
-      osm << m.getEl(0, 0) << " " << m.getEl(0, 1) << " " << m.getEl(0, 2) << endl 
-		  << m.getEl(1, 0) << " " << m.getEl(1, 1) << " " << m.getEl(1, 2) << endl
-		  << m.getEl(2, 0) << " " << m.getEl(2, 1) << " " << m.getEl(2, 2) << endl;
+      osm << setprecision(1) << fixed << m.getEl(0, 0) << " " << setprecision(1) << fixed << m.getEl(0, 1) << " " << setprecision(1) << fixed << m.getEl(0, 2) << endl 
+		  << setprecision(1) << fixed << m.getEl(1, 0) << " " << setprecision(1) << fixed << m.getEl(1, 1) << " " << setprecision(1) << fixed << m.getEl(1, 2) << endl
+		  << setprecision(1) << fixed << m.getEl(2, 0) << " " << setprecision(1) << fixed << m.getEl(2, 1) << " " << setprecision(1) << fixed << m.getEl(2, 2) << endl;
       return osm;
 }
 
@@ -135,18 +137,19 @@ std::istream& operator>>(std::istream &ism, Matrix3D<Any>& m)
 }
 
 template<typename Any>
-Matrix3D<Any> operator* (const Matrix3D<Any>& m, int a) {
+Matrix3D<Any> operator* (const Matrix3D<Any>& m, Any a) {
     Matrix3D<Any> res;
 	for(int i = 0; i < 3; i++) {
 		for(int j = 0; j < 3; j++) {
 			res.setEl(i, j, m.getEl(i, j) * a);
+			//cout << m.getEl(i, j) * a << endl;
 		}
 	}
 	return res;
 }
 
 template<typename Any>
-Matrix3D<Any> operator* (int a, const Matrix3D<Any>& m) {
+Matrix3D<Any> operator* (Any a, const Matrix3D<Any>& m) {
     Matrix3D<Any> res;
 	for(int i = 0; i < 3; i++) {
 		for(int j = 0; j < 3; j++) {
@@ -233,8 +236,14 @@ std::istream& operator>>(std::istream &is, Vector3D<Any> &v) {
 	return is;
 }
 
-
 int main()
+{
+	Matrix3D<double> m1(1, 0, 0, 0, 1, 0, 0, 0, 1);
+	m1 = m1 * 0.1;
+	cout << m1;
+	return 0;
+}
+/*int main()
 {
 	Vector3D<float> v1(1, 1, 1);
 	Vector3D<float> v2(42, 42, 42);
@@ -278,3 +287,4 @@ int main()
 
 	return 0;
 }
+*/
