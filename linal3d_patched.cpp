@@ -117,9 +117,9 @@ public:
 template<typename Any>
 std::ostream& operator<<(std::ostream& osm, const Matrix3D<Any>& m)
 {
-      osm << setprecision(1) << fixed << m.getEl(0, 0) << " " << setprecision(1) << fixed << m.getEl(0, 1) << " " << setprecision(1) << fixed << m.getEl(0, 2) << endl 
-		  << setprecision(1) << fixed << m.getEl(1, 0) << " " << setprecision(1) << fixed << m.getEl(1, 1) << " " << setprecision(1) << fixed << m.getEl(1, 2) << endl
-		  << setprecision(1) << fixed << m.getEl(2, 0) << " " << setprecision(1) << fixed << m.getEl(2, 1) << " " << setprecision(1) << fixed << m.getEl(2, 2) << endl;
+      osm << m.getEl(0, 0) << " " << m.getEl(0, 1) << " " << m.getEl(0, 2) << endl 
+	  << m.getEl(1, 0) << " " << m.getEl(1, 1) << " " << m.getEl(1, 2) << endl
+	  << m.getEl(2, 0) << " " << m.getEl(2, 1) << " " << m.getEl(2, 2) << endl;
       return osm;
 }
 
