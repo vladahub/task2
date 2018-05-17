@@ -183,18 +183,6 @@ Matrix3D<Any> operator* (const Matrix3D<Any>& m1, const Matrix3D<Any>& m2) {
 }
 
 template<typename Any>
-Vector3D<Any> operator* (const Vector3D<Any>& v, const Matrix3D<Any>& m) {
-	Any x = v.getX() * m.getEl(0, 0) + v.getY() * m.getEl(1, 0) + v.getZ() * m.getEl(2, 0);
-	Any y = v.getX() * m.getEl(0, 1) + v.getY() * m.getEl(1, 1) + v.getZ() * m.getEl(2, 1);
-	Any z = v.getX() * m.getEl(0, 2) + v.getY() * m.getEl(1, 2) + v.getZ() * m.getEl(2, 2);
-	Vector3D<Any> v3;
-	v3.setX(x);
-	v3.setY(y);
-	v3.setZ(z);
-	return v3;
-}
-
-template<typename Any>
 Vector3D<Any> operator* (const Matrix3D<Any>& m, const Vector3D<Any>& v) {
 	Any x = v.getX() * m.getEl(0, 0) + v.getY() * m.getEl(1, 0) + v.getZ() * m.getEl(2, 0);
 	Any y = v.getX() * m.getEl(0, 1) + v.getY() * m.getEl(1, 1) + v.getZ() * m.getEl(2, 1);
@@ -207,9 +195,9 @@ Vector3D<Any> operator* (const Matrix3D<Any>& m, const Vector3D<Any>& v) {
 }
 
 template<typename Any>
-Vector3D<Any> operator* (const Vector3D<Any>& v1, const Vector3D<Any>& v2) {
-	Vector3D<Any> v4(v2.getX() * v1.getX(), v2.getY() * v1.getY(), v2.getZ() * v1.getZ());
-	return v4;
+Any operator* (const Vector3D<Any>& v1, const Vector3D<Any>& v2) {
+	Any s = v2.getX() * v1.getX() + v2.getY() * v1.getY() + v2.getZ() * v1.getZ();
+	return s;
 }
 
 template<typename Any>
