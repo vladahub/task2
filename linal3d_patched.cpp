@@ -150,13 +150,7 @@ Matrix3D<Any> operator* (const Matrix3D<Any>& m, Any a) {
 
 template<typename Any>
 Matrix3D<Any> operator* (Any a, const Matrix3D<Any>& m) {
-    Matrix3D<Any> res;
-	for(int i = 0; i < 3; i++) {
-		for(int j = 0; j < 3; j++) {
-			res.setEl(i, j, m.getEl(i, j) * a);
-		}
-	}
-	return res;
+   return m * a;
 }
 
 
