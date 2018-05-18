@@ -113,7 +113,7 @@ public:
 		{
 			double s = sqrt(pow(((*it).getX() - bodies.at(0).getX()), 2) + pow(((*it).getY() - bodies.at(0).getY()), 2));
 			std::cout << s << "<= " << (*it).getR() + bodies.at(0).getR() << "\n";
-			if(s <= (*it).getR() + bodies.at(0).getR())
+			if(s <= (int)((*it).getR() + bodies.at(0).getR()) + 1)
 			{
 				double alpha = atan(abs((*it).getX() - bodies.at(0).getX()) / abs((*it).getY() - bodies.at(0).getY()));
 				double m1 = m;
