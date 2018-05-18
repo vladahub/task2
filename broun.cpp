@@ -104,7 +104,7 @@ public:
 
     void initScene() {
         bodies.push_back(SampleBall(200, 200, 20, 0, 0));
-        bodies.push_back(SampleBall(175, 200, 1, 10, 10));
+        bodies.push_back(SampleBall(-80, 200, 1, 10, 10));
         std::cout << bodies.at(0);
 	    }
 
