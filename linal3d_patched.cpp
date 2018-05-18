@@ -59,7 +59,7 @@ public:
 		return !(operator== (v2));
 	}
 
-	Vector3D<Any> operator* (const Any a) {
+	Vector3D<Any> operator* (const Any a) const{
 		Vector3D<Any> v3;
 		v3.x = x*a;
 		v3.y = y*a;
@@ -118,8 +118,8 @@ template<typename Any>
 std::ostream& operator<<(std::ostream& osm, const Matrix3D<Any>& m)
 {
       osm << m.getEl(0, 0) << " " << m.getEl(0, 1) << " " << m.getEl(0, 2) << endl 
-	  << m.getEl(1, 0) << " " << m.getEl(1, 1) << " " << m.getEl(1, 2) << endl
-	  << m.getEl(2, 0) << " " << m.getEl(2, 1) << " " << m.getEl(2, 2) << endl;
+		  << m.getEl(1, 0) << " " << m.getEl(1, 1) << " " << m.getEl(1, 2) << endl
+		  << m.getEl(2, 0) << " " << m.getEl(2, 1) << " " << m.getEl(2, 2) << endl;
       return osm;
 }
 
@@ -142,7 +142,6 @@ Matrix3D<Any> operator* (const Matrix3D<Any>& m, Any a) {
 	for(int i = 0; i < 3; i++) {
 		for(int j = 0; j < 3; j++) {
 			res.setEl(i, j, m.getEl(i, j) * a);
-			//cout << m.getEl(i, j) * a << endl;
 		}
 	}
 	return res;
@@ -189,18 +188,18 @@ Vector3D<Any> operator* (const Matrix3D<Any>& m, const Vector3D<Any>& v) {
 }
 
 template<typename Any>
-Vector3D<Any> operator* (const int a, Vector3D<Any>& v2) {
+Any operator* (const Vector3D<Any>& v1, const Vector3D<Any>& v2) {
+	Any s = v2.getX() * v1.getX() + v2.getY() * v1.getY() + v2.getZ() * v1.getZ();
+	return s;
+}
+
+template<typename Any>
+Vector3D<Any> operator* (const Any a, const Vector3D<Any>& v2) {
 	return v2 * a;
 }
 
 template<typename Any>
-Vector3D<Any> operator* (const int a, const Vector3D<Any>& v2) {
-	Vector3D<Any> v4(v2.getX() * a, v2.getY() * a, v2.getZ() * a);
-	return v4;
-}
-
-template<typename Any>
-std::ostream& operator<<(std::ostream& os, Vector3D<Any>& v) {
+std::ostream& operator<<(std::ostream& os, const Vector3D<Any>& v) {
       os << "(" << v.getX() << ", " << v.getY() << ", " << v.getZ() << ")";
       return os;
 }
@@ -221,7 +220,13 @@ int main()
 {
 	Matrix3D<double> m1(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	m1 = m1 * 0.1;
-	cout << m1;
+	Vector3D<int> v1(1, 1, 1);
+	Vector3D<int> v2(3, 3, 3);
+	int s = v1 * v2;
+	cout << (2 * v1);
+	/*Vector3D<int> v1(1, 1, 1);
+	Vector3D<int> v2(2, 2, 2);
+	cout <<  << endl;*/
 	return 0;
 }
 /*int main()
