@@ -2,220 +2,126 @@
 #include <vector>
 #include <math.h>
 
+#include "GLBall.hpp"
+#include "NBodyScene.hpp"
 
 #define WALL1  0.0
 #define WALL2  0.0
 #define WALL3  700.0
 #define WALL4  700.0
+#define m 5.0
+#define M 10.0
 
-class GLBall
+class SampleBall : public GLBall
 {
-public:
-	virtual double getX() = 0;
-	virtual double getY() = 0;
-	virtual double getR() = 0;
-	virtual ~GLBall() {}
-};
+protected:
+    double vx;
+    double vy;
+    double x;
+    double y;
+    double r;
 
-class BigBro : public GLBall
-{
-private: double x, y, R, Vx, Vy, M;
 public:
-	BigBro() {
-		x = 200;
-		y = 200;
-		Vx = 0;
-		Vy = 0;
-		R = 20;
-		M = 100; 
-	}
-
-	BigBro(double x, double y, double R, double Vx, double Vy, double M) {
+	SampleBall(double x, double y, double r, double vx, double vy) {
 		this->x = x;
 		this->y = y;
-		this->Vx = Vx;
-		this->Vy = Vy;
-		this->R = R;
-		this->M = M;
+		this->vx = vx;
+		this->vy = vy;
+		this->r = r;
 	}
 
-	double getX() {
+	double getX() const override{
 		return x;
 	}
 
-	double getY() {
+	double getY() const override{
 		return y;
 	}
 	
-	double getR() {
-		return R;
+	double getR() const override{
+		return r;
 	}
 	
 	double getMass() {
 		return M;
 	}
 	double getVx() {
-		return Vx;
+		return vx;
 	}
 
 	double getVy() {
-		return Vy;
+		return vy;
 	}
 
 	double getSpeed() {
-		return sqrt(Vx*Vx + Vy*Vy);
-	}
-	double getImpulse() {
-		return getSpeed() * M;
+		return sqrt(vx*vx + vy*vy);
 	}
 
 	void move(double dt) {
-		((abs(x - WALL1) <= R || abs(x - WALL3) <= R)? (x += -Vx * dt) : (x += Vx * dt));
-		((abs(y - WALL2) <= R || abs(y - WALL3) <= R)? (y += -Vy * dt) : (y += Vy * dt));
+		 ((x + vx + r >= WALL3 || x + vx - r <= WALL1)? (vx = -vx) : (x += vx * dt));
+		 ((y + vy + r >= WALL4 || y + vy - r <= WALL2)? (vy = -vy) : (y += vy * dt));
 	}
 
-	void setVx(double Vx) {
-		this->Vx = Vx;
+	void setVx(double vx) {
+		this->vx = vx;
 	}
 
-	void setVy(double Vy) {
-		this->Vy = Vy;
+	void setVy(double vy) {
+		this->vy = vy;
 	}
 
-	~BigBro() {}
+	~SampleBall() {}
 
 };
 
-std::ostream& operator<<(std::ostream& osB, BigBro& B) {
-   osB << "BigBro (" << B.getX() << ", " << B.getY() << "), "
+std::ostream& operator<<(std::ostream& osB, SampleBall& B) {
+   osB << "SampleBall (" << B.getX() << ", " << B.getY() << "), "
 	   << "R: " << B.getR() << ", "
 	   << "V: " << B.getSpeed() << ", "
 	   << "M: " << B.getMass() << std::endl;
 	return osB;
 }
 
-class LilBro : public GLBall
-{
-private: double x, y, r, vx, vy, m;
-public:
-	LilBro() {
-		x = 30;
-		y = 30;
-		r = 10;
-		vx = rand();
-		vy = rand();
-		m = 10;
-	}
-
-	LilBro(double x, double y, double r, double vx, double vy, double m) {
-		this->x = x;
-		this->y = y;
-		this->r = r;
-		this->vx = vx;
-		this->vy = vy;
-		this->m = m;
-	}
-
-	double getX() {
-		return x;
-	}
-
-	double getY() {
-		return y;
-	}
-	
-	double getvX() {
-		return vx;
-	}
-	
-	double getvY() {
-		return vy;
-	}
-	
-	double getR() {
-		return r;
-	}
-	
-	double getmass() {
-		return m;
-	}
-	
-	double getSpeed() {
-		return sqrt(vx*vx + vy*vy);
-	}
-	double getImpulse() {
-		return getSpeed() * m;
-	}
-
-	void setvX(double vx) {
-		this->vx = vx;
-	}
-
-	void setvY(double vy) {
-		this->vy = vy;
-	}
-
-	void move(double dt) {
-	 ((abs(x - WALL1) <= r || abs(x - WALL3) <= r)? (x += -vx * dt) : (x += vx * dt));
-	 ((abs(y - WALL2) <= r || abs(y - WALL3) <= r)? (y += -vy * dt) : (y += vy * dt));
-	}
-
-
-	~LilBro() {}
-};
-
-class NBodyScene {
-public:
-    virtual ~NBodyScene() = default;
-    virtual unsigned int getNumberOfBros() const = 0;
-    virtual const GLBall& getBro(unsigned int number) const = 0;
-    virtual void doTimeStep() = 0;
-};
-
 class SampleScene : public NBodyScene {
 protected:
-    std::vector<LilBro> bros;
-    BigBro Big;
+    std::vector<SampleBall> bodies;
 
 public:
-    unsigned int getNumberOfBros() const override {
-        return bros.size() + 1;
+    unsigned int getNumberOfBodies() const override {
+        return bodies.size();
     }
 
-    const GLBall& getBro(unsigned int number) const override {  
-        if (number == 1) return Big;
-        return bros.at(number);
+    const GLBall& getBody(unsigned int number) const override {  
+        return bodies.at(number);
     }
 
     void doTimeStep() override {
-        for(LilBro& b : bros) {
+        for(SampleBall& b : bodies) {
+            checkCollision();
             b.move(0.1);
-        	std::cout << "Lil.v: " << b.getSpeed() << std::endl;
         }
-
-        Big.move(0.1);
-        std::cout << "Big.V: " << Big.getSpeed() << std::endl;
     }
 
     void initScene() {
-        bros.push_back(LilBro(179, 200, 1, 1, 1, 10));
-        BigBro B;
+        bodies.push_back(SampleBall(200, 200, 20, 0, 0));
+        bodies.push_back(SampleBall(175, 200, 1, 10, 10));
+        std::cout << bodies.at(0);
 	    }
 
     void checkCollision() {
-		for(auto it = bros.begin(); it < bros.end(); it++)
+		for(auto it = bodies.begin() + 1; it < bodies.end(); it++)
 		{
-			double s = sqrt(pow(((*it).getX() - Big.getX()), 2) + pow(((*it).getY() - Big.getY()), 2));
-			std::cout << s << "<= " << (*it).getR() + Big.getR() << "\n";
-			if(s <= (*it).getR() + Big.getR())
+			double s = sqrt(pow(((*it).getX() - bodies.at(0).getX()), 2) + pow(((*it).getY() - bodies.at(0).getY()), 2));
+			std::cout << s << "<= " << (*it).getR() + bodies.at(0).getR() << "\n";
+			if(s <= (*it).getR() + bodies.at(0).getR())
 			{
-				double alpha = atan(abs((*it).getX() - Big.getX()) / abs((*it).getY() - Big.getY()));
-				double m1 = (*it).getmass();
-				double m2 = Big.getMass();
-				double vx1 = (*it).getvX();
-				double vy1 = (*it).getvY();
-				double vx2 = Big.getVx();
-				double vy2 = Big.getVy();
+				double alpha = atan(abs((*it).getX() - bodies.at(0).getX()) / abs((*it).getY() - bodies.at(0).getY()));
+				double m1 = m;
+				double m2 = M;
+				double vx1 = (*it).getVx();
+				double vy1 = (*it).getVy();
+				double vx2 = bodies.at(0).getVx();
+				double vy2 = bodies.at(0).getVy();
 
 				double vx1_after = ((((m1 - m2) * (vx1*cos(alpha) + vy1*sin(alpha)) + 2*m2*(vx2*cos(alpha) + vy2*sin(alpha))) * cos(alpha)) / (m1 + m2)) 
 				+ ((vy1*cos(alpha) - vx1*sin(alpha)) * cos(alpha + 3.14/2));
@@ -223,8 +129,8 @@ public:
 				double vy1_after = ((((m1 - m2) * (vx1*cos(alpha) + vy1*sin(alpha)) + 2*m2*(vx2*cos(alpha) + vy2*sin(alpha))) * sin(alpha)) / (m1 + m2)) 
 				+ ((vy1*cos(alpha) - vx1*sin(alpha)) * sin(alpha + 3.14/2));
 
-				(*it).setvX(-vx1_after);
-				(*it).setvY(-vy1_after);
+				(*it).setVx(-vx1_after);
+				(*it).setVy(-vy1_after);
 
 				double vx2_after = ((((m2 - m1) * (vx2*cos(alpha) + vy2*sin(alpha)) + 2*m1*(vx1*cos(alpha) + vy1*sin(alpha))) * cos(alpha)) / (m1 + m2)) 
 				+ ((vy2*cos(alpha) - vx2*sin(alpha)) * cos(alpha + 3.14/2));
@@ -232,36 +138,33 @@ public:
 				double vy2_after = ((((m2 - m1) * (vx2*cos(alpha) + vy2*sin(alpha)) + 2*m1*(vx1*cos(alpha) + vy1*sin(alpha))) * sin(alpha)) / (m1 + m2)) 
 				+ ((vy2*cos(alpha) - vx2*sin(alpha)) * sin(alpha + 3.14/2));
 
-				Big.setVx(-vx2_after);
-				Big.setVy(-vy2_after);
+				bodies.at(0).setVx(vx2_after);
+				bodies.at(0).setVy(-vy2_after);
 			}
 
-			std::cout << "Big " << Big << std::endl;
-			std::cout << (*it).getSpeed() << std::endl;
-			std::cout << (*it).getvX() << std::endl;
-			std::cout << (*it).getvY() << std::endl;
+			std::cout << "Big " << bodies.at(0) << std::endl;
 			std::cout << (*it).getX() << std::endl;
 			std::cout << (*it).getY() << std::endl;
 		}
 	}
 };
 
-std::ostream& operator<<(std::ostream& os, LilBro& l) {
-	os << "LilBro (" << l.getX() << ", " << l.getY() << "), "
-	   << "r: " << l.getR() << ", "
-	   << "v: " << l.getSpeed() << ", "
-	   << "m: " << l.getmass() << std::endl;
-	return os;
+NBodyScene* getScene()
+{
+    SampleScene* s = new SampleScene();
+    s->initScene();
+    return s;
 }
 
 int main()
 {
-	SampleScene S;
- 	S.initScene();
+	SampleScene* S = (SampleScene*)getScene();
 
 	while(true) {
-		S.checkCollision();
-		S.doTimeStep();
+		S->doTimeStep();
 	}
+
+	delete S;
+
 	return 0;
 }
