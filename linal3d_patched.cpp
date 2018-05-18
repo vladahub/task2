@@ -195,9 +195,8 @@ Vector3D<Any> operator* (const Matrix3D<Any>& m, const Vector3D<Any>& v) {
 }
 
 template<typename Any>
-Any operator* (const Vector3D<Any>& v1, const Vector3D<Any>& v2) {
-	Any s = v2.getX() * v1.getX() + v2.getY() * v1.getY() + v2.getZ() * v1.getZ();
-	return s;
+Vector3D<Any> operator* (const int a, Vector3D<Any>& v2) {
+	return v2 * a;
 }
 
 template<typename Any>
