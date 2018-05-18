@@ -56,7 +56,7 @@ public:
 	}
 
 	bool operator!= (const Vector3D<Any>& v2) {
-		return ((x != v2.x) || (y != v2.y) || (z != v2.z));
+		return !(operator== (v2));
 	}
 
 	Vector3D<Any> operator* (const Any a) {
