@@ -96,24 +96,35 @@ public:
     }
 
     void doTimeStep() override {
-        for(SampleBall& b : bodies) {
-            checkCollision();
-            b.move(0.1);
-        }
+        checkCollision();
     }
 
     void initScene() {
-        bodies.push_back(SampleBall(200, 200, 20, 0, 0));
-        bodies.push_back(SampleBall(-80, 200, 1, 10, 10));
-        std::cout << bodies.at(0);
-	    }
+        int n;
+        double x, y, r, vx, vy;
 
+        std::cin >> n;
+
+        for(int i = 0; i < n; i++) {
+	        std::cin >> x;
+	        std::cin >> y;
+	        std::cin >> r;
+	        std::cin >> vx;
+	        std::cin >> vy;
+
+	        bodies.push_back(SampleBall(x, y, r, vx, vy));
+    	}
+
+        std::cout << bodies.at(0);
+	}
+
+// если все еще слишком близко шарики блинкануть
     void checkCollision() {
 		for(auto it = bodies.begin() + 1; it < bodies.end(); it++)
 		{
 			double s = sqrt(pow(((*it).getX() - bodies.at(0).getX()), 2) + pow(((*it).getY() - bodies.at(0).getY()), 2));
 			std::cout << s << "<= " << (*it).getR() + bodies.at(0).getR() << "\n";
-			if(s <= (int)((*it).getR() + bodies.at(0).getR()) + 1)
+			if(s <= ((*it).getR() + bodies.at(0).getR()))
 			{
 				double alpha = atan(abs((*it).getX() - bodies.at(0).getX()) / abs((*it).getY() - bodies.at(0).getY()));
 				double m1 = m;
@@ -129,8 +140,8 @@ public:
 				double vy1_after = ((((m1 - m2) * (vx1*cos(alpha) + vy1*sin(alpha)) + 2*m2*(vx2*cos(alpha) + vy2*sin(alpha))) * sin(alpha)) / (m1 + m2)) 
 				+ ((vy1*cos(alpha) - vx1*sin(alpha)) * sin(alpha + 3.14/2));
 
-				(*it).setVx(-vx1_after);
-				(*it).setVy(-vy1_after);
+				(*it).setVx(vx1_after);
+				(*it).setVy(vy1_after);
 
 				double vx2_after = ((((m2 - m1) * (vx2*cos(alpha) + vy2*sin(alpha)) + 2*m1*(vx1*cos(alpha) + vy1*sin(alpha))) * cos(alpha)) / (m1 + m2)) 
 				+ ((vy2*cos(alpha) - vx2*sin(alpha)) * cos(alpha + 3.14/2));
@@ -139,13 +150,17 @@ public:
 				+ ((vy2*cos(alpha) - vx2*sin(alpha)) * sin(alpha + 3.14/2));
 
 				bodies.at(0).setVx(vx2_after);
-				bodies.at(0).setVy(-vy2_after);
+				bodies.at(0).setVy(vy2_after);
 			}
+
+			(*it).move(0.1);
 
 			std::cout << "Big " << bodies.at(0) << std::endl;
 			std::cout << (*it).getX() << std::endl;
 			std::cout << (*it).getY() << std::endl;
 		}
+
+		bodies.at(0).move(0.1);
 	}
 };
 
